@@ -127,11 +127,12 @@
     <ClInclude Include="atlas.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="button.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="GameView.h" />
     <ClInclude Include="global.h" />
     <ClInclude Include="MenuView.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="RandomUtils.h" />
     <ClInclude Include="SettingView.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="view.h" />
@@ -139,11 +140,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="GameView.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MenuView.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="RandomUtils.cpp" />
     <ClCompile Include="SettingView.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>

@@ -67,14 +67,6 @@ constexpr auto HEALTH_BAR_WIDTH = 50;                   // 生命条宽度
 constexpr auto HEALTH_BAR_HEIGHT = 6;                   // 生命条高度
 
 
-// 枚举类型
-// 敌人枚举
-enum class EnemyType {
-    NORMAL,      // 普通敌机：中等速度，中等血量，100分
-    FAST,        // 快速敌机：高速，低血量，150分
-    TANK,        // 坦克敌机：低速，高血量，200分
-    METEOR       // 高伤害
-};
 // 子弹类型枚举 (BulletType) - 已存在，补充说明(在bullet.h里面）
 
 // 游戏状态枚举
@@ -107,7 +99,7 @@ extern IMAGE return_menu_img;
 extern IMAGE go_set_img;
 
 
-//11.13(音乐更新)
+
 //音乐别名和路径
 const char MusicPath[][2][128] = {
     "M00","空",
@@ -122,6 +114,7 @@ const char MusicPath[][2][128] = {
 //音效别名和路径
 const char SoundPath[][2][128] = {
     {"S00", "点击音效"},
+    {"S01", "点击音效"}
     
     
 };//音乐开关
