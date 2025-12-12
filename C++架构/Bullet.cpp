@@ -1,106 +1,142 @@
 #include "Bullet.h"
+#include "utils.h"
+#include"SettingView.h"
+// 子弹类实现
+Bullet::Bullet(BulletType type, float x, float y, float speedY)
+    : type(type), x(x), y(y), speedY(speedY), active(true) {
 
-
-#include"utils.h"
-#include <cmath>
-
-// 外部声明你的putimage_new函数
-extern void putimage_new(int x, int y, const IMAGE* img);
-
-AdvancedBullet::AdvancedBullet(float startX, float startY, float speedX, float speedY,
-    BulletType bulletType, int dmg, IMAGE* img)
-    : x(startX), y(startY), speedX(speedX), speedY(speedY), damage(dmg),
-    isActive(true), type(bulletType), bulletImg(img), homingTargetId(-1), rotation(0) {
-
-    if (bulletImg) {
-        width = bulletImg->getwidth();
-        height = bulletImg->getheight();
+    // 加载子弹图片
+    std::string imagePath;
+    if (type == BulletType::PLAYER_BULLET) {
+        imagePath = "./Assert/images/123.png";  // 玩家子弹
+        width = 15;
+        height = 30;
     }
     else {
-        // 默认尺寸
-        width = 8;
-        height = 16;
+        imagePath = "./Assert/images/34.png";   // 敌人子弹
+        width = 20;
+        height = 20;
+    }
+
+    loadimage(&image, imagePath.c_str(),width,height);
+}
+
+void Bullet::update(float deltaTime) {
+    if (!active) return;
+
+    // 更新位置（只沿Y轴移动）
+    y += speedY * deltaTime;
+
+    // 检查边界
+    if (isOutOfBounds()) {
+        active = false;
     }
 }
 
-void AdvancedBullet::update() {
-    if (!isActive) return;
+void Bullet::draw() {
+    if (!active) return;
 
-    x += speedX;
-    y += speedY;
+    // 绘制子弹（透明贴图）
+    putimage(static_cast<int>(x), static_cast<int>(y), &image);
+}
 
-    // 根据子弹类型添加特殊行为
-    switch (type) {
-    case BulletType::PLAYER_MISSILE:
-        // 导弹可能有尾焰效果等
-        break;
-    case BulletType::PLAYER_LASER:
-        // 激光可能持续存在
-        break;
-    default:
-        break;
+bool Bullet::isOutOfBounds() const {
+    return (y < -height || y > WINDOW_HEIGHT);
+}
+
+RECT Bullet::getRect() const {
+    RECT rect;
+    rect.left = static_cast<LONG>(x);
+    rect.top = static_cast<LONG>(y);
+    rect.right = static_cast<LONG>(x + width);
+    rect.bottom = static_cast<LONG>(y + height);
+    return rect;
+}
+
+// 子弹管理器实现
+
+// 构造函数中初始化
+BulletManager::BulletManager()
+    : autoFireEnabled(false), autoFireInterval(0.5f), autoFireTimer(0.0f) {
+}
+
+// 设置自动射击
+void BulletManager::setAutoFire(bool enable, float interval) {
+    autoFireEnabled = enable;
+    autoFireInterval = interval;
+    if (!enable) {
+        autoFireTimer = 0.0f;
     }
 }
 
-void AdvancedBullet::draw() {
-    if (!isActive) return;
+// 更新自动射击
+void BulletManager::updateAutoFire(float deltaTime, float playerX, float playerY) {
+    if (!autoFireEnabled) return;
 
-    if (bulletImg) {
-        // 使用你的putimage_new函数绘制带透明度的子弹
-        int drawX = (int)(x - width / 2);
-        int drawY = (int)(y - height / 2);
-        putimage_new(drawX, drawY, bulletImg);
-    }
-    else {
-        // 备用：简单图形绘制
-        COLORREF bulletColor;
-        switch (type) {
-        case BulletType::PLAYER_NORMAL:
-            bulletColor = RGB(0, 255, 255); // 青色
-            break;
-        case BulletType::PLAYER_LASER:
-            bulletColor = RGB(255, 0, 0);   // 红色
-            break;
-        case BulletType::ENEMY_NORMAL:
-            bulletColor = RGB(255, 255, 0); // 黄色
-            break;
-        default:
-            bulletColor = RGB(255, 255, 255); // 白色
+    // 更新计时器
+    autoFireTimer += deltaTime;
+
+    // 达到射击间隔，发射子弹
+    if (autoFireTimer >= autoFireInterval) {
+        // 计算子弹发射位置（玩家飞机中心）
+        float bulletX = playerX -8 ;  // 假设玩家飞机宽度50px，居中发射
+        float bulletY = playerY - 23;      // 从飞机顶部发射
+
+        // 发射子弹
+        firePlayerBullet(bulletX, bulletY);
+
+        // 重置计时器
+        autoFireTimer = 0.0f;
+
+        // 播放射击音效（如果有）
+        if (ifSound) {
+            playSound(2);  // 假设2是射击音效ID
         }
-
-        setfillcolor(bulletColor);
-        solidcircle((int)x, (int)y, width / 2);
     }
 }
 
-bool AdvancedBullet::checkBoundary(int screenWidth, int screenHeight) {
-    if (x < -width || x > screenWidth + width ||
-        y < -height || y > screenHeight + height) {
-        isActive = false;
-        return true;
+BulletManager::~BulletManager() {
+    // 清理所有子弹
+    for (auto bullet : bullets) {
+        delete bullet;
     }
-    return false;
+    bullets.clear();
 }
 
-void AdvancedBullet::homingUpdate(float targetX, float targetY) {
-    if (homingTargetId == -1) return;
+void BulletManager::update(float deltaTime) {
+    // 更新所有子弹
+    for (auto bullet : bullets) {
+        bullet->update(deltaTime);
+    }
 
-    // 简单的追踪逻辑
-    float dx = targetX - x;
-    float dy = targetY - y;
-    float distance = sqrtf(dx * dx + dy * dy);
+    // 清理无效子弹
+    cleanupBullets();
+}
 
-    if (distance > 0) {
-        // 标准化方向
-        dx /= distance;
-        dy /= distance;
+void BulletManager::draw() {
+    // 绘制所有活跃子弹
+    for (auto bullet : bullets) {
+        if (bullet->isActive()) {
+            bullet->draw();
+        }
+    }
+}
 
-        // 调整速度方向（可以添加追踪强度参数）
-        float homingStrength = 0.1f;
-        speedX = speedX * (1 - homingStrength) + dx * 5.0f * homingStrength;
-        speedY = speedY * (1 - homingStrength) + dy * 5.0f * homingStrength;
+void BulletManager::firePlayerBullet(float x, float y) {
+    // 创建新的玩家子弹（向上发射，速度-800像素/秒）
+    Bullet* bullet = new Bullet(BulletType::PLAYER_BULLET, x, y, -800.0f);
+    bullets.push_back(bullet);
+}
 
-        // 更新旋转角度（用于导弹等）
-        rotation = atan2f(dy, dx) * 180 / 3.14159f;
+void BulletManager::cleanupBullets() {
+    // 移除无效的子弹
+    for (auto it = bullets.begin(); it != bullets.end(); ) {
+        if (!(*it)->isActive()) {
+            delete* it;
+            it = bullets.erase(it);
+        }
+        else {
+            ++it;
+        }
     }
 }

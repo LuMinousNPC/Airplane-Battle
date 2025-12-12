@@ -2,13 +2,14 @@
 #include "View.h"
 #include "button.h"
 #include "global.h"
-
+#include "EnemyManager.h"
+#include "Bullet.h" 
 
 class GameView : public View
 {
 public:
-    GameView() = default;
-    ~GameView() = default;
+    GameView();
+    ~GameView();
 
     // 视图生命周期函数（重写父类纯虚函数）
     void enter() override;     // 进入视图：初始化资源
@@ -16,20 +17,22 @@ public:
     void draw() override;      // 绘制视图内容
     void handleInput(ExMessage& msg) override;  // 处理输入
     void quit() override;      // 退出视图：释放资源
-	void drawGameUI();    // 绘制游戏界面UI
+	
+	void resetGame();    // 重置游戏状态
+	bool checkCollisions(); // 检查碰撞
+    void drawGameUI(); // 绘制游戏 UI
 
 private:
-    int Pause_x = (WINDOW_WIDTH - pause_img.getwidth()) / 2;                                //暂停菜单x坐标
-    int Pause_y = (WINDOW_HEIGHT - pause_img.getheight()) / 2;                              //暂停菜单y坐标
-    int button_x = Pause_x + (pause_img.getwidth() - return_game_img.getwidth()) / 2 - 10;  //按钮统一x坐标
-    int return_game_y = Pause_y + 100;                                                      //回到游戏按钮y
-    int go_set_y = Pause_y + 100 + 175;                                                     //进入设置按钮y
-    int return_menu_y = Pause_y + 100 + 350;                                                //回到主菜单按钮y
-    ImageButton pause_button{ Pause_x, Pause_y, 500, 700, "./Assert/images/pause.png" };
-    ImageButton return_game_button{ button_x, return_game_y, 300, 100, "./Assert/images/buttonReturnGame.png" };
-    ImageButton go_set_button{ button_x, go_set_y, 300, 100,  "./Assert/images/set.png" };
-    ImageButton return_menu_button{ button_x, return_menu_y, 300, 100, "./Assert/images/buttonReturnMenu.png" };
+    
+    EnemyManager enemyManager; // 敌人管理器​
+
+    BulletManager bulletManager; // 添加子弹管理器
+ 
+
+    float deltaTime;            // 时间增量​
+    DWORD lastUpdateTime;       // 上次更新时间
+    // 背景图片
+    IMAGE background_img1;
+    IMAGE background_img2;
 
 };
-
-

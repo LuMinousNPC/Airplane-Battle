@@ -1,48 +1,85 @@
-#pragma once
-#pragma once
+#ifndef BULLET_H
+#define BULLET_H
 #include <graphics.h>
-#include <string>
-
+#include <vector>
+#include "global.h"
+// 子弹类型
 enum class BulletType {
-    PLAYER_NORMAL,    // 玩家普通子弹
-    PLAYER_LASER,     // 玩家激光
-    PLAYER_MISSILE,   // 玩家导弹
-    ENEMY_NORMAL,     // 敌人普通子弹
-    ENEMY_BOSS        // BOSS子弹
+	PLAYER_BULLET, // 玩家子弹
+	ENEMY_BULLET // 敌人子弹
 };
-
-class AdvancedBullet {
-private:
-    float x, y;               // 子弹中心坐标
-    float speedX, speedY;     // 子弹速度
-    int damage;              // 伤害值
-    bool isActive;           // 是否活跃
-    BulletType type;         // 子弹类型
-    IMAGE* bulletImg;        // 子弹图片
-    int width, height;       // 子弹尺寸
-
-    // 特殊效果
-    int homingTargetId;      // 追踪目标ID（用于追踪导弹）
-    float rotation;          // 旋转角度
-
+// 子弹类
+class Bullet {
 public:
-    AdvancedBullet(float startX, float startY, float speedX, float speedY,
-        BulletType type, int damage = 10, IMAGE* img = nullptr);
-
-    void update();
-    void draw();
-    bool checkBoundary(int screenWidth, int screenHeight);
-    void homingUpdate(float targetX, float targetY); // 追踪逻辑
-
-    // Getter & Setter
-    float getX() const { return x; }
-    float getY() const { return y; }
-    int getWidth() const { return width; }
-    int getHeight() const { return height; }
-    int getDamage() const { return damage; }
-    bool getIsActive() const { return isActive; }
-    BulletType getType() const { return type; }
-
-    void setActive(bool active) { isActive = active; }
-    void setHomingTarget(int targetId) { homingTargetId = targetId; }
+	// 构造函数
+	Bullet(BulletType type, float x, float y, float speedY);
+	// 更新子弹
+	void update(float deltaTime);
+	// 绘制子弹
+	void draw();
+	// 检查是否超出边界
+	bool isOutOfBounds() const;
+	// 获取子弹矩形（用于碰撞检测）
+	RECT getRect() const;
+	// Getter 方法
+	float getX() const { 
+		return x; 
+	}
+	float getY() const { 
+		return y;
+	}
+	int getWidth() const { 
+		return width; 
+	}
+	int getHeight() const { 
+		return height; 
+	}
+	BulletType getType() const {
+		return type;
+	}
+	bool isActive() const { 
+		return active; 
+	}
+	// Setter 方法
+	void setActive(bool active) { this->active = active; }
+private:BulletType type;    // 子弹类型
+	float x, y;    // 位置
+	float speedY;    // Y 轴速度
+	int width, height;    // 尺寸
+	bool active;     // 是否活跃
+	IMAGE image; // 子弹图片
 };
+
+
+// 子弹管理器类
+class BulletManager {
+public:
+	// 构造函数
+	BulletManager();
+	// 析构函数
+	~BulletManager();
+	// 更新所有子弹
+	void update(float deltaTime);
+	// 绘制所有子弹
+	void draw();
+	// 发射玩家子弹
+	void firePlayerBullet(float x, float y);
+	// 清理无效子弹
+	void cleanupBullets();
+	// 获取所有子弹
+	const std::vector<Bullet*>& getBullets() const { 
+		return bullets; 
+	}
+	// 设置自动射击参数
+	void setAutoFire (bool enable, float interval = 0.5f);
+	// 更新自动射击（在游戏主循环中调用）
+	void updateAutoFire (float deltaTime, float playerX, float playerY);
+private:
+	std::vector<Bullet*> bullets; // 子弹列表
+	bool autoFireEnabled; // 是否启用自动射击
+	float autoFireInterval; // 自动射击间隔（秒）
+	float autoFireTimer; // 自动射击计时器
+
+
+};
+#endif // BULLET_H
