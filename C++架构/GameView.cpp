@@ -41,6 +41,10 @@ void GameView::update() {
     checkCollisions();
 }
 
+    // 检查碰撞
+    checkCollisions();
+}
+
 void GameView::draw() {
     cleardevice();
 
