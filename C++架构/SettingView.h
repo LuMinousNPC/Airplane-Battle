@@ -3,7 +3,7 @@
 #include "view.h"
 #include "button.h"
 #include "utils.h"
-// 团队介绍视图：展示团队信息，支持返回菜单
+
 class SettingView : public View {
 public:
 	SettingView() = default;

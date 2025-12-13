@@ -6,7 +6,7 @@
 
 
 GameView::GameView()
-    : deltaTime(0.0f), lastUpdateTime(0) {
+    : deltaTime(0.0f), lastUpdateTime(0), currentScore(0){
     // 构造函数初始化
 }
 
@@ -20,6 +20,8 @@ void GameView::enter() {
     enemyManager.init();
     player.init();
     bulletManager.setAutoFire(true, 0.5f);
+    currentScore = 0;  // 重置当前分数
+    
 
     resetGame();
 }
@@ -41,6 +43,7 @@ void GameView::update() {
     checkCollisions();
     // 检查子弹与敌人的碰撞
     handleBulletEnemyCollisions();
+    
 }
 
 void GameView::draw() {
@@ -63,6 +66,7 @@ void GameView::draw() {
     if (y2 >= 960) {
         y2 = -2880;
     }
+    drawScore();  // 绘制分数
     bulletManager.draw();
     enemyManager.draw();
     player.draw();
@@ -110,7 +114,7 @@ bool GameView::checkCollisions() {
     if (collision) {
         // 玩家受伤处理
         player.takeDamage(20);  // 示例伤害值
-        //  碰撞的敌机消失
+        //  碰撞的敌机消失(checkPlayerCollision里实现)
         
         // 播放碰撞音效（如果有）
         if (ifSound) {
@@ -181,8 +185,60 @@ void GameView::onBulletHitEnemy(Bullet* bullet, Enemy* enemy) {
     // 3. 检查敌人是否被击毁
     if (enemy->getHealth() <= 0) {
         enemy->setActive(false);
+        
+        //得分
+        int enemyScore = 0;
+        switch (enemy->getType()) {
+        case EnemyType::NORMAL_PLANE: enemyScore = 100; break;  // 普通敌人
+        case EnemyType::FAST_PLANE: enemyScore = 150; break;  // 快速敌人
+        case EnemyType::ARMORED_PLANE: enemyScore = 200; break;  // 装甲敌人
+        case EnemyType::BOSS_PLANE: enemyScore = 500; break;  // BOSS敌人
+        default: enemyScore = 100; break;
+        }
 
-        // 这里可以添加得分逻辑
-        // 例如：score += 100;
+        currentScore += enemyScore;
     }
+}
+// 绘制分数
+void GameView::drawScore() {
+    // 设置文本样式
+    settextcolor(WHITE);
+    setbkmode(TRANSPARENT);
+    settextstyle(20, 0, _T("微软雅黑"));
+
+    // 绘制当前分数（左下角）
+    TCHAR scoreText[50];
+    _stprintf_s(scoreText, _T("分数: %d"), currentScore);
+    outtextxy(20, WINDOW_HEIGHT - 40, scoreText);
+
+}
+
+// 绘制游戏结束界面
+void GameView::drawGameOverScreen() {
+    cleardevice();
+    // 绘制背景
+    putimage(0, 0, &setting_bk_image);
+	
+    // 绘制“游戏结束”文本
+    settextcolor(RED);
+    setbkmode(TRANSPARENT);
+    settextstyle(50, 0, _T("微软雅黑"));
+    outtextxy(WINDOW_WIDTH / 2 - 150, WINDOW_HEIGHT / 2 - 100, _T("游戏结束"));
+    // 绘制最终分数
+    TCHAR scoreText[50];
+    _stprintf_s(scoreText, _T("最终分数: %d"), currentScore);
+    settextstyle(30, 0, _T("微软雅黑"));
+    outtextxy(WINDOW_WIDTH / 2 - 100, WINDOW_HEIGHT / 2, scoreText);
+    // 绘制提示文本
+    settextstyle(20, 0, _T("微软雅黑"));
+    outtextxy(WINDOW_WIDTH / 2 - 150, WINDOW_HEIGHT / 2 + 50, _T("按任意键返回主菜单"));
+    // 等待玩家按键
+    ExMessage msg;
+    while (true) {
+        if (peekmessage(&msg, EM_KEY)) {
+            break;  // 按键后退出循环
+        }
+    }
+    // 返回主菜单
+    view_manager.switch_to(ViewManager::ViewType::Menu);
 }

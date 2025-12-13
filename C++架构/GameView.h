@@ -21,7 +21,8 @@ public:
 	void resetGame();    // 重置游戏状态
 	bool checkCollisions(); // 检查碰撞
     void drawGameUI(); // 绘制游戏 UI
-
+    
+	void drawGameOverScreen(); // 绘制游戏结束界面
 private:
     
     EnemyManager enemyManager; // 敌人管理器​
@@ -39,5 +40,8 @@ private:
     IMAGE background_img1;
     IMAGE background_img2;
 
+    // 分数相关
+    int currentScore;      // 当前分数
+    void drawScore();      // 绘制分数
 };
 

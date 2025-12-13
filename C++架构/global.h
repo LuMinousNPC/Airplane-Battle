@@ -45,11 +45,6 @@ extern Player player;
 
 
 
-//游玩中暂停
-extern IMAGE pause_img;
-extern IMAGE return_game_img;
-extern IMAGE return_menu_img;
-extern IMAGE go_set_img;
 
 
 

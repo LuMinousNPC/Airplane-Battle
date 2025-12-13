@@ -30,7 +30,7 @@ void loadAllResources() {
     loadimage(&setting_bk_image, "./Assert/images/Settings_Panel.jpg", WINDOW_WIDTH, WINDOW_HEIGHT);
     
 
-    //加载子弹图片
+    
 
 
 
