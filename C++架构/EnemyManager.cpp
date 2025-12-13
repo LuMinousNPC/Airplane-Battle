@@ -205,6 +205,8 @@ bool EnemyManager::checkPlayerCollision(float playerX, float playerY, float play
 
             if (!(enemyLeft > playerRight || enemyRight < playerLeft ||
                 enemyTop > playerBottom || enemyBottom < playerTop)) {
+                // 2. Åö×²µÄµÐ»úÏûÊ§
+                enemy->setActive (false);
                 return true;
             }
         }

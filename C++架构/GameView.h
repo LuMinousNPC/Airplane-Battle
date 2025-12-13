@@ -25,9 +25,13 @@ public:
 private:
     
     EnemyManager enemyManager; // 敌人管理器​
-
     BulletManager bulletManager; // 添加子弹管理器
- 
+    
+    // 碰撞检测相关函数
+    bool checkCollision(float x1, float y1, float w1, float h1,
+    float x2, float y2, float w2, float h2);
+    void handleBulletEnemyCollisions();
+    void onBulletHitEnemy(Bullet* bullet, Enemy* enemy);
 
     float deltaTime;            // 时间增量​
     DWORD lastUpdateTime;       // 上次更新时间

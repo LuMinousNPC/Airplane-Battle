@@ -39,10 +39,8 @@ void GameView::update() {
 
     // 检查碰撞
     checkCollisions();
-}
-
-    // 检查碰撞
-    checkCollisions();
+    // 检查子弹与敌人的碰撞
+    handleBulletEnemyCollisions();
 }
 
 void GameView::draw() {
@@ -103,7 +101,7 @@ void GameView::resetGame() {
 // 检查碰撞
 bool GameView::checkCollisions() {
     if (!player.isAlive) return false;
-
+    
     // 检查玩家与敌人的碰撞
     bool collision = enemyManager.checkPlayerCollision(
         player.getX(), player.getY(),
@@ -112,7 +110,8 @@ bool GameView::checkCollisions() {
     if (collision) {
         // 玩家受伤处理
         player.takeDamage(20);  // 示例伤害值
-
+        //  碰撞的敌机消失
+        
         // 播放碰撞音效（如果有）
         if (ifSound) {
             playSound(1);
@@ -122,4 +121,68 @@ bool GameView::checkCollisions() {
     }
 
     return false;
+}
+// 矩形碰撞检测实现
+bool GameView::checkCollision(float x1, float y1, float w1, float h1,
+    float x2, float y2, float w2, float h2) {
+    return !(x1 + w1 < x2 ||
+        x1 > x2 + w2 ||
+        y1 + h1 < y2 ||
+        y1 > y2 + h2);
+}
+
+// 处理子弹与敌人的碰撞
+void GameView::handleBulletEnemyCollisions() {
+    const auto& bullets = bulletManager.getBullets();
+    const auto& enemies = enemyManager.getEnemies();
+
+    // 遍历所有子弹
+    for (auto bullet : bullets) {
+        if (!bullet->isActive() || bullet->getType() != BulletType::PLAYER_BULLET) {
+            continue;  // 只处理活跃的玩家子弹
+        }
+
+        // 获取子弹信息
+        float bulletX = bullet->getX();
+        float bulletY = bullet->getY();
+        float bulletW = bullet->getWidth();
+        float bulletH = bullet->getHeight();
+
+        // 遍历所有敌人
+        for (auto enemy : enemies) {
+            if (!enemy->isActive()) {
+                continue;  // 只处理活跃的敌人
+            }
+
+            // 获取敌人信息
+            float enemyX = enemy->getX();
+            float enemyY = enemy->getY();
+            float enemyW = enemy->getWidth();
+            float enemyH = enemy->getHeight();
+
+            // 检查碰撞
+            if (checkCollision(bulletX, bulletY, bulletW, bulletH,
+                enemyX-0.5*enemyW, enemyY, enemyW, enemyH)) {
+                onBulletHitEnemy(bullet, enemy);
+                break;  // 一个子弹只能击中一个敌人
+            }
+        }
+    }
+}
+
+// 子弹击中敌人的处理
+void GameView::onBulletHitEnemy(Bullet* bullet, Enemy* enemy) {
+    // 1. 子弹消失
+    bullet->setActive(false);
+
+    // 2. 敌人掉血（伤害值20）
+    enemy->takeDamage(20);
+
+    // 3. 检查敌人是否被击毁
+    if (enemy->getHealth() <= 0) {
+        enemy->setActive(false);
+
+        // 这里可以添加得分逻辑
+        // 例如：score += 100;
+    }
 }

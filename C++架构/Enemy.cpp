@@ -21,7 +21,7 @@ Enemy::~Enemy() {
 }
 
 void Enemy::initImage() {
-    // 加载图片（参照Player类的加载方式）
+    // 加载图片
     loadimage(&enemyImage, config.imagePath.c_str(), config.width, config.height);
 
     // 更新实际的宽高（如果图片加载后尺寸不同）
