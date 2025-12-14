@@ -339,5 +339,3 @@ void BulletManager::updateAutoFire(float deltaTime, float playerX, float playerY
 ***
 
 *最后更新：2025 年 12 月 14 日*
-
-> （注：文档部分内容可能由 AI 生成）
