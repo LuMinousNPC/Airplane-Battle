@@ -1,0 +1,345 @@
+# ✈️ 飞机大战游戏
+
+
+
+![游戏截图](https://example.com/game_screenshot.png)
+
+一款经典的飞机大战游戏，采用现代 C++ 面向对象设计，使用 EasyX 图形库实现流畅的游戏体验。
+
+## 🎮 游戏简介
+
+这是一款复古风格的飞机大战游戏，玩家控制飞机在屏幕上移动，击败不断出现的敌人，挑战最高得分。游戏包含完整的菜单系统、设置界面和游戏结束画面，提供了丰富的视觉效果和交互体验。
+
+## ✨ 功能特性
+
+### 核心玩法
+
+
+
+* **玩家控制**：飞机移动跟随鼠标指针
+
+* **自动射击**：无需按键，自动发射子弹
+
+* **敌人系统**：多种类型敌人，不同移动模式和血量
+
+* **碰撞检测**：精确的矩形碰撞检测
+
+* **记分系统**：实时显示当前得分
+
+### 游戏界面
+
+
+
+* **主菜单**：开始游戏、设置、退出
+
+* **游戏画面**：流畅的游戏动画和特效
+
+* **设置界面**：音效开关等选项
+
+* **游戏结束**：显示最终得分，支持返回菜单
+
+### 视觉效果
+
+
+
+* **精美背景**：层次丰富的游戏背景
+
+* **流畅动画**：平滑的移动和射击效果
+
+* **按钮交互**：悬停和点击效果
+
+* **文本显示**：清晰的得分和提示信息
+
+### 音效支持
+
+
+
+* **射击音效**：子弹发射声音
+
+* **爆炸音效**：敌人击毁效果
+
+* **碰撞音效**：飞机碰撞声音
+
+* **按钮音效**：菜单操作反馈
+
+## 🏗️ 技术架构
+
+### 设计模式
+
+
+
+* **面向对象**：封装、继承、多态
+
+* **视图模式**：基于 View 的界面管理
+
+* **单例模式**：全局视图管理器
+
+* **对象池**：优化子弹和敌人创建
+
+### 核心类结构
+
+
+
+```
+├── View           // 视图基类
+
+├── MenuView       // 主菜单视图
+
+├── GameView       // 游戏视图
+
+├── SettingView    // 设置视图
+
+├── Player         // 玩家飞机
+
+├── Enemy          // 敌人类
+
+├── EnemyManager   // 敌人管理器
+
+├── Bullet         // 子弹类
+
+├── BulletManager  // 子弹管理器
+
+└── Button         // 按钮类
+```
+
+### 技术特点
+
+
+
+* **C++11+**：现代 C++ 特性
+
+* **EasyX 图形库**：简单易用的图形 API
+
+* **双缓冲绘图**：消除闪烁
+
+* **事件驱动**：消息循环处理
+
+## 🚀 安装运行
+
+### 开发环境
+
+
+
+* **操作系统**：Windows
+
+* **编译器**：Visual Studio 2019+
+
+* **图形库**：EasyX 2022
+
+* **语言标准**：C++11 或更高
+
+### 编译运行
+
+
+
+1. **克隆仓库**：
+
+
+
+```
+git clone https://github.com/LuMinousNPC/Airplane-Battle.git
+
+cd Airplane-Battle
+```
+
+
+
+1. **打开项目**：
+
+* 使用 Visual Studio 打开解决方案文件
+
+1. **配置依赖**：
+
+* 确保已安装 EasyX 图形库
+
+* 设置项目字符集为 "使用多字节字符集"
+
+1. **编译运行**：
+
+* 选择 Debug 或 Release 配置
+
+* 点击运行按钮启动游戏
+
+### 资源文件
+
+确保项目目录下包含以下资源：
+
+
+
+* `./Assert/images/`：图片资源文件夹
+
+* `./Assert/sounds/`：音效资源文件夹（可选）
+
+## 🎯 游戏操作
+
+### 基本操作
+
+
+
+* **鼠标指针**：控制飞机移动
+
+* **鼠标点击**：菜单界面按钮操作
+
+* **任意键**：游戏结束后返回菜单
+
+### 游戏目标
+
+
+
+* 击败尽可能多的敌人
+
+* 获得更高的分数
+
+* 挑战自己的极限
+
+## 📁 文件结构
+
+
+
+```
+Airplane-Battle/
+
+├── Assert/                  # 资源文件夹
+
+│   ├── images/              # 图片资源
+
+│   └── sounds/              # 音效资源
+
+├── src/                     # 源代码
+
+│   ├── atlas.h              # 图集定义
+
+│   ├── Bullet.cpp/h         # 子弹类
+
+│   ├── button.h             # 按钮类
+
+│   ├── Enemy.cpp/h          # 敌人类
+
+│   ├── EnemyManager.cpp/h   # 敌人管理器
+
+│   ├── GameView.cpp/h       # 游戏视图
+
+│   ├── global.h             # 全局变量
+
+│   ├── GlobalConstants.h    # 全局常量
+
+│   ├── main.cpp             # 程序入口
+
+│   ├── MenuView.cpp/h       # 菜单视图
+
+│   ├── Player.cpp/h         # 玩家类
+
+│   ├── SettingView.cpp/h    # 设置视图
+
+│   ├── utils.cpp/h          # 工具函数
+
+│   ├── view.h               # 视图基类
+
+│   └── viewManager.h        # 视图管理器
+
+├── Airplane-Battle.sln      # Visual Studio解决方案
+
+└── README.md                # 项目说明
+```
+
+## 🔧 开发说明
+
+### 主要功能实现
+
+#### 1. 视图管理
+
+
+
+```
+// 视图切换示例
+
+viewManager.switchView("GameView");  // 切换到游戏视图
+
+viewManager.switchView("MenuView");  // 切换到菜单视图
+```
+
+#### 2. 碰撞检测
+
+
+
+```
+// 矩形碰撞检测
+
+bool checkCollision(const RECT& rect1, const RECT& rect2) {
+
+&#x20;   return !(rect1.right < rect2.left ||
+
+&#x20;            rect1.left > rect2.right ||
+
+&#x20;            rect1.bottom < rect2.top ||
+
+&#x20;            rect1.top > rect2.bottom);
+
+}
+```
+
+#### 3. 游戏状态管理
+
+
+
+```
+// 游戏状态枚举
+
+enum class GameState {
+
+&#x20;   PLAYING,    // 游戏进行中
+
+&#x20;   GAME\_OVER   // 游戏结束
+
+};
+```
+
+#### 4. 自动射击
+
+
+
+```
+// 子弹自动发射
+
+void BulletManager::updateAutoFire(float deltaTime, float playerX, float playerY) {
+
+&#x20;   if (!autoFire) return;
+
+&#x20;  &#x20;
+
+&#x20;   fireTimer += deltaTime;
+
+&#x20;   if (fireTimer >= fireInterval) {
+
+&#x20;       spawnBullet(BulletType::PLAYER\_BULLET, playerX, playerY);
+
+&#x20;       fireTimer = 0;
+
+&#x20;   }
+
+}
+```
+
+## 🙏 致谢
+
+
+
+* **EasyX 团队**：提供优秀的图形库
+
+* **开源社区**：提供宝贵的学习资源
+
+## 📞 联系我们
+
+如有任何问题或建议，请通过以下方式联系我们：
+
+
+
+* 邮箱：2775155469@qq.com
+
+
+
+***
+
+*最后更新：2025 年 12 月 14 日*
+
+> （注：文档部分内容可能由 AI 生成）
