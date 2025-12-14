@@ -2,8 +2,6 @@
 
 
 
-![游戏截图](https://example.com/game_screenshot.png)
-
 一款经典的飞机大战游戏，采用现代 C++ 面向对象设计，使用 EasyX 图形库实现流畅的游戏体验。
 
 ## 🎮 游戏简介
