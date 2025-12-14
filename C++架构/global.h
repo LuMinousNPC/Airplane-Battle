@@ -50,19 +50,16 @@ extern Player player;
 
 //音乐别名和路径
 const char MusicPath[][2][128] = {
-    "M00","空",
-    "M01","fall",
-    "M02","spring",
-    "M03","summer",
-    "M04","winter",
-    "M08","LavaChicken",
-    "M10","空"
+    "M00","Helmet",
+    "M01","SovietMarch",
+    "M02","LavaChicken",
+    "M03","空"
 };
 
 //音效别名和路径
 const char SoundPath[][2][128] = {
     {"S00", "点击音效"},
-    {"S01", "点击音效"}
+    {"S01", "爆炸音效"}
     
     
 };//音乐开关

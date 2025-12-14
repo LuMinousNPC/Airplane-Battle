@@ -20,11 +20,11 @@ public:
 	
 	void resetGame();    // 重置游戏状态
 	bool checkCollisions(); // 检查碰撞
-    void drawGameUI(); // 绘制游戏 UI
     
+	void checkGameOver(); // 检查游戏是否结束
 	void drawGameOverScreen(); // 绘制游戏结束界面
 private:
-    
+
     EnemyManager enemyManager; // 敌人管理器​
     BulletManager bulletManager; // 添加子弹管理器
     
@@ -36,6 +36,7 @@ private:
 
     float deltaTime;            // 时间增量​
     DWORD lastUpdateTime;       // 上次更新时间
+   
     // 背景图片
     IMAGE background_img1;
     IMAGE background_img2;

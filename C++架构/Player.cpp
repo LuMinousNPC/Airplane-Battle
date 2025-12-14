@@ -86,19 +86,17 @@ void Player::drawHealthBar() {
     rectangle(barX, barY, barX + barWidth, barY + barHeight);
 }
 
-//射击
-void Player::shoot() {
-    float bulletX = x;
-    float bulletY = y - height / 2;
-    //写好子弹管理了以后解除注释
-    //bulletManager.createPlayerBullet(bulletX, bulletY, bulletLevel);
-}
+
 // 玩家受伤
 void Player::takeDamage(int damage) {
     health -= damage;
     if (health <= 0) {
         health = 0;
         isAlive = false;
-        // 可以在这里触发死亡动画或效果
+        
+        // 播放死亡音效
+        if (ifSound) {
+            playSound(1); 
+        }
     }
 }

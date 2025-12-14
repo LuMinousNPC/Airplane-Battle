@@ -49,41 +49,9 @@ void putimage_new(int x, int y, const IMAGE* img) {
         GetImageHDC((IMAGE*)img), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
 
-// 半透明渲染图像到设备上下文: 实现透明通道渲染，调用系统底层绘图API实现
-inline void putimage_alpha(int x, int y, IMAGE* img) {
-    int w = img->getwidth();
-    int h = img->getheight();
-    AlphaBlend(GetImageHDC(NULL), x, y, w, h,
-        GetImageHDC(img), 0, 0, w, h, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
-}
 
-// 水平翻转图片
-inline void flip_image(IMAGE* src, IMAGE* dst) {
-    int w = src->getwidth();
-    int h = src->getheight();
-    Resize(dst, w, h);	// 设置目标图片尺寸（与源图一致）
-    DWORD* src_buffer = GetImageBuffer(src);
-    DWORD* dst_buffer = GetImageBuffer(dst);
-    // 逐像素水平翻转（每行从右到左复制像素）
-    for (int y = 0; y < h; y++) {
-        for (int x = 0; x < w; x++) {
-            int idx_src = y * w + x;
-            int idx_dst = y * w + (w - x - 1);
-            dst_buffer[idx_dst] = src_buffer[idx_src];
-        }
-    }
-}
 
-// 水平翻转图集（批量翻转图集中的所有图片）
-void flip_atlas(Atlas& src, Atlas& dst) {
-    dst.clear(); // 清空目标图集
-    // 遍历源图集中的所有图片，逐一翻转后添加到目标图集
-    for (int i = 0; i < src.get_size(); i++) {
-        IMAGE img_filpped;
-        flip_image(src.get_image(i), &img_filpped);
-        dst.add_image(img_filpped);
-    }
-}
+
 
 /*
     功能：判断目标点是否在指定矩形区域内（左闭右开、上闭下开，避免边界重叠）

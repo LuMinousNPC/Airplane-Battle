@@ -40,11 +40,7 @@ public:
     // 受伤
     void takeDamage(int damage);
     
-    //射击
-    void shoot();
-
-    
-    
+ 
     bool isAlive;               // 是否存活
 private:
     int x, y;                   // 玩家中心坐标

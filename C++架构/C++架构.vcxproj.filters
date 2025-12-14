@@ -42,9 +42,6 @@
     <ClInclude Include="SettingView.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="atlas.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>头文件</Filter>
     </ClInclude>

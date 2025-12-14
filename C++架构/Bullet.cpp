@@ -79,7 +79,7 @@ void BulletManager::updateAutoFire(float deltaTime, float playerX, float playerY
     // 达到射击间隔，发射子弹
     if (autoFireTimer >= autoFireInterval) {
         // 计算子弹发射位置（玩家飞机中心）
-        float bulletX = playerX -8 ;  // 假设玩家飞机宽度50px，居中发射
+        float bulletX = playerX -8 ;        // 居中发射
         float bulletY = playerY - 23;      // 从飞机顶部发射
 
         // 发射子弹
@@ -87,11 +87,7 @@ void BulletManager::updateAutoFire(float deltaTime, float playerX, float playerY
 
         // 重置计时器
         autoFireTimer = 0.0f;
-
-        // 播放射击音效（如果有）
-        if (ifSound) {
-            playSound(2);  // 假设2是射击音效ID
-        }
+       
     }
 }
 

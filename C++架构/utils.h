@@ -2,7 +2,7 @@
 #define UTILS_H
 #include <graphics.h>
 #include <windows.h> 
-#include "atlas.h"
+
 #pragma comment(lib, "Msimg32.lib")
 
 
@@ -17,14 +17,8 @@ void loadAllResources();
 */
 void putimage_new(int x, int y, const IMAGE* img);
 
-// 半透明渲染图像到设备上下文：实现透明通道渲染，调用系统底层绘图API实现
-inline void putimage_alpha(int x, int y, IMAGE* img);
 
-// 水平翻转图片（逐像素处理，生成左右对称图像）
-inline void flip_image(IMAGE* src, IMAGE* dst);
 
-// 水平翻转图集（批量处理图集中所有图片，生成对称方向图集）
-void flip_atlas(Atlas& src, Atlas& dst);
 
 /*
     功能：判断目标点是否在指定矩形区域内（左闭右开、上闭下开，避免边界重叠判定）

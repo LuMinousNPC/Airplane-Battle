@@ -7,6 +7,7 @@
 
 GameView::GameView()
     : deltaTime(0.0f), lastUpdateTime(0), currentScore(0){
+	player.isAlive = true;
     // 构造函数初始化
 }
 
@@ -44,51 +45,70 @@ void GameView::update() {
     // 检查子弹与敌人的碰撞
     handleBulletEnemyCollisions();
     
+	// 检查游戏结束
+	checkGameOver(); 
 }
 
 void GameView::draw() {
     cleardevice();
+    if (gameState == GameState::PLAYING) {
+        
+        // 两张图片滚动粘贴
+        static int y1 = -960;
+        static int y2 = -2880;
+        int backgroundSpeed = 2;    // 背景滚动速度
 
-    // 两张图片滚动粘贴
-    static int y1 = -960;
-    static int y2 = -2880;
-    int backgroundSpeed = 2;    // 背景滚动速度
+        putimage(0, y1, &background_img1);
+        putimage(0, y2, &background_img2);
 
-    putimage(0, y1, &background_img1);
-    putimage(0, y2, &background_img2);
+        y1 += backgroundSpeed;
+        y2 += backgroundSpeed;
 
-    y1 += backgroundSpeed;
-    y2 += backgroundSpeed;
+        if (y1 >= 960) {
+            y1 = -2880;
+        }
+        if (y2 >= 960) {
+            y2 = -2880;
+        }
+        drawScore();  // 绘制分数
+        bulletManager.draw();
+        enemyManager.draw();
+        player.draw();
+  
 
-    if (y1 >= 960) {
-        y1 = -2880;
     }
-    if (y2 >= 960) {
-        y2 = -2880;
+    else {
+        // 游戏结束画面
+        drawGameOverScreen();
     }
-    drawScore();  // 绘制分数
-    bulletManager.draw();
-    enemyManager.draw();
-    player.draw();
-    drawGameUI();
+    
+
 }
 
 void GameView::handleInput(ExMessage& msg) {
     gameState = GameState::PLAYING;
     if (player.isAlive && msg.message != NULL) {
         player.handleKey(msg);
+        
     }
-}
+    else {
+        // 游戏结束状态下的输入处理
+        if (msg.message == WM_LBUTTONDOWN ||
+            msg.message == WM_KEYDOWN) {
+            // 鼠标点击或按键按下，返回菜单
+            if (ifSound) {
+                playSound(0);  // 播放按钮音效
+            }
+            view_manager.switch_to(ViewManager::ViewType::Menu);
+        }
+    }
+
+ }
 
 void GameView::quit() {
     enemyManager.clearEnemies();
 }
 
-// 绘制游戏UI
-void GameView::drawGameUI() {
-    
-
-}
 
 // 重置游戏
 void GameView::resetGame() {
@@ -113,13 +133,8 @@ bool GameView::checkCollisions() {
 
     if (collision) {
         // 玩家受伤处理
-        player.takeDamage(20);  // 示例伤害值
+        player.takeDamage(30);  
         //  碰撞的敌机消失(checkPlayerCollision里实现)
-        
-        // 播放碰撞音效（如果有）
-        if (ifSound) {
-            playSound(1);
-        }
 
         return true;
     }
@@ -213,32 +228,46 @@ void GameView::drawScore() {
 
 }
 
-// 绘制游戏结束界面
+// 检查游戏结束
+void GameView::checkGameOver() {
+    if (player.isAlive) return;
+
+    // 游戏结束
+    gameState = GameState::GAME_OVER;
+
+    
+}
+
+// 绘制游戏结束画面
 void GameView::drawGameOverScreen() {
-    cleardevice();
-    // 绘制背景
+    // 1. 绘制背景（使用setting_bk_image）
     putimage(0, 0, &setting_bk_image);
-	
-    // 绘制“游戏结束”文本
-    settextcolor(RED);
+
+    // 2. 设置文本样式
     setbkmode(TRANSPARENT);
-    settextstyle(50, 0, _T("微软雅黑"));
-    outtextxy(WINDOW_WIDTH / 2 - 150, WINDOW_HEIGHT / 2 - 100, _T("游戏结束"));
-    // 绘制最终分数
+
+    // 3. 绘制"游戏结束"标题
+    settextcolor(YELLOW);
+    settextstyle(48, 0, _T("微软雅黑"));
+    TCHAR title[] = _T("游戏结束");
+    int titleX = (WINDOW_WIDTH - textwidth(title)) / 2;
+    int titleY = WINDOW_HEIGHT / 3 - 80;
+    outtextxy(titleX, titleY, title);
+
+    // 4. 绘制当前得分
+    settextcolor(WHITE);
+    settextstyle(36, 0, _T("微软雅黑"));
     TCHAR scoreText[50];
-    _stprintf_s(scoreText, _T("最终分数: %d"), currentScore);
-    settextstyle(30, 0, _T("微软雅黑"));
-    outtextxy(WINDOW_WIDTH / 2 - 100, WINDOW_HEIGHT / 2, scoreText);
-    // 绘制提示文本
-    settextstyle(20, 0, _T("微软雅黑"));
-    outtextxy(WINDOW_WIDTH / 2 - 150, WINDOW_HEIGHT / 2 + 50, _T("按任意键返回主菜单"));
-    // 等待玩家按键
-    ExMessage msg;
-    while (true) {
-        if (peekmessage(&msg, EM_KEY)) {
-            break;  // 按键后退出循环
-        }
-    }
-    // 返回主菜单
-    view_manager.switch_to(ViewManager::ViewType::Menu);
+    _stprintf_s(scoreText, _T("最终得分: %d"), currentScore);
+    int scoreX = (WINDOW_WIDTH - textwidth(scoreText)) / 2;
+    int scoreY = WINDOW_HEIGHT / 3 + 20;
+    outtextxy(scoreX, scoreY, scoreText);
+
+    // 5. 绘制提示信息
+    settextcolor(LIGHTGRAY);
+    settextstyle(24, 0, _T("微软雅黑"));
+    TCHAR hintText[] = _T("按任意键或点击鼠标返回菜单");
+    int hintX = (WINDOW_WIDTH - textwidth(hintText)) / 2;
+    int hintY = WINDOW_HEIGHT / 3 + 100;
+    outtextxy(hintX, hintY, hintText);
 }

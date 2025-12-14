@@ -17,7 +17,7 @@ Enemy::Enemy(EnemyType type, const EnemyConfig& config, float x, float y)
 }
 
 Enemy::~Enemy() {
-    // 图片资源由系统管理，不需要手动释放
+    
 }
 
 void Enemy::initImage() {
@@ -54,8 +54,7 @@ void Enemy::draw() {
     // 计算绘制位置（中心坐标转左上角坐标）
     int drawX = static_cast<int>(x - config.width / 2);
     int drawY = static_cast<int>(y - config.height / 2);
-
-    // 使用putimage_new绘制（支持透明）
+   
     putimage_new(drawX, drawY, &enemyImage);
 
     // 绘制生命值条（除了陨石）

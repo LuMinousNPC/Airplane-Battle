@@ -46,6 +46,7 @@ void MenuView::handleInput(ExMessage& msg) {
             {
                 playSound(0);
             }
+            gameState == GameState::PLAYING;
             view_manager.switch_to(ViewManager::ViewType::Game);
         }
        

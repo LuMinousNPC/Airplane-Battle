@@ -76,7 +76,7 @@ void EnemyManager::initEnemyConfigs() {
     enemyConfigs.push_back({
         "./Assert/images/meteor_large.png",  // 图片路径
         80, 80,         // 宽高
-        2,              // 生命值
+        200,              // 生命值
         2.0f,           // 速度
         100,            // 得分
         10              // 生成权重

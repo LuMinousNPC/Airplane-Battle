@@ -28,7 +28,7 @@ public:
     // 生成敌人
     void spawnEnemy(EnemyType type, float x, float y);
 
-    // 随机生成敌人（无尽模式）
+    // 随机生成敌人
     void spawnRandomEnemy();
 
     // 清除所有敌人
